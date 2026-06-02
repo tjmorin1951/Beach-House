@@ -1,4 +1,4 @@
-This is the big one. Paste it all. The Firebase settings block is near the top.
+
 import React, { useState, useEffect, useMemo } from 'react';
 import ReactDOM from 'react-dom/client';
 import { Calendar, Home, Users, Plus, X, Check, Trash2, Waves, Sun, MapPin, Bed, ChevronLeft, ChevronRight, Sparkles, Heart, MessageCircle, RefreshCw, Lock, KeyRound, Bell, UserPlus, ThumbsUp, ThumbsDown, Clock, Star, Mail, Phone, LayoutGrid, AlignLeft, BookUser, Search } from 'lucide-react';
