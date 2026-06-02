@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>The Beach House</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;0,9..144,700;1,9..144,400&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    body { margin: 0; background: #FBF6EE; }
+    #boot { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; background: #FBF6EE; font-family: Georgia, serif; text-align: center; }
+    #boot .e { font-size: 56px; animation: bf 3s ease-in-out infinite; }
+    #boot .t { font-size: 30px; color: #1B4965; font-weight: 600; }
+    #boot .s { font-size: 15px; color: #C8553D; font-style: italic; }
+    @keyframes bf { 0%,100% { transform: translateY(0);} 50% { transform: translateY(-8px);} }
+  </style>
+</head>
+<body>
+  <div id="root">
+    <div id="boot">
+      <div class="e">🏖️</div>
+      <div class="t">The Beach House</div>
+      <div class="s">Loading…</div>
+    </div>
+  </div>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+</html>
