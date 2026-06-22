@@ -382,8 +382,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const [saveToDirectory,setSaveToDirectory]=useState(false);
 
   const setWholeHouse=val=>{setWholeHouseRaw(val);if(!val)setWholeHouseUnlocked(false);};
-  useEffect(()=>{if(wholeHouse){setSelectedRooms(ROOMS.map(r=>r.id));}else if(!editingBooking?.wholeHouse){setSelectedRooms(editingBooking?.rooms||[]);}},[wholeHouse]);
-
+  useEffect(()=>{if(wholeHouse){setSelectedRooms(bookableRooms.map(r=>r.id));}else if(!editingBooking?.wholeHouse){setSelectedRooms(editingBooking?.rooms||[]);}},[wholeHouse]);
   const nights=nightsCount(startDate,endDate),datesValid=nights>0;
   const overlappingBookings=useMemo(()=>bookings.filter(b=>b.id!==editingBooking?.id&&datesValid&&overlaps(startDate,endDate,b.startDate,b.endDate)),[bookings,startDate,endDate,datesValid,editingBooking]);
   useEffect(()=>{if(joinTargetId&&!overlappingBookings.find(b=>b.id===joinTargetId))setJoinTargetId(null);},[overlappingBookings,joinTargetId]);
