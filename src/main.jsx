@@ -362,6 +362,7 @@ function WholeHousePicker({wholeHouse,setWholeHouse,conflictedRooms,datesValid,c
 
 function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,onSaveGuest,onCancel}){
   const userEmail=(auth&&auth.currentUser&&auth.currentUser.email?auth.currentUser.email:'').toLowerCase();
+  const bookableRooms=ROOMS.filter(r=>!r.owner||r.owner===userEmail);
   const [firstName,setFirstName]=useState(editingBooking?.firstName||'');
   const [lastName,setLastName]=useState(editingBooking?.lastName||'');
   const [email,setEmail]=useState(editingBooking?.email||'');
