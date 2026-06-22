@@ -4,6 +4,7 @@ import ReactDOM from 'react-dom/client';
 import { Calendar, Home, Users, Plus, X, Check, Trash2, Waves, Sun, MapPin, Bed, ChevronLeft, ChevronRight, Sparkles, Heart, MessageCircle, RefreshCw, Lock, KeyRound, Bell, UserPlus, ThumbsUp, ThumbsDown, Clock, Star, Mail, Phone, LayoutGrid, AlignLeft, BookUser, Search } from 'lucide-react';
 import { initializeApp } from 'firebase/app';
 import { getFirestore, doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
+import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification, signOut } from 'firebase/auth';
 import './index.css';
 
 /* ════════════════════════════════════════════════════════════
@@ -746,4 +747,100 @@ function RoomTile({room,occupant,highlight}){
   );
 }
 
-ReactDOM.createRoot(document.getElementById('root')).render(NEEDS_SETUP ? <SetupScreen/> : <App/>);
+// ===== Login / sign-up layer =====
+const auth = NEEDS_SETUP ? null : getAuth();
+
+function AuthBootSplash(){
+  return (
+    <div style={{minHeight:'100vh',display:'flex',flexDirection:'column',alignItems:'center',justifyContent:'center',gap:'14px',background:'#FBF6EE',fontFamily:'Georgia, serif',textAlign:'center'}}>
+      <div style={{fontSize:'56px'}}>🏖️</div>
+      <div style={{fontSize:'18px',color:'#1B4965',fontStyle:'italic'}}>Just a moment…</div>
+    </div>
+  );
+}
+
+function LogoutButton(){
+  return (
+    <button onClick={()=>signOut(auth)} className="fixed bottom-5 right-5 z-40 px-4 py-2.5 rounded-full text-sm font-medium transition-all hover:scale-105" style={{background:'#1B4965',color:'#FBF6EE',boxShadow:'0 4px 14px rgba(27,73,101,0.35)'}}>Log out</button>
+  );
+}
+
+function AuthScreen(){
+  const [mode,setMode]=useState('login');
+  const [email,setEmail]=useState('');
+  const [password,setPassword]=useState('');
+  const [firstName,setFirstName]=useState('');
+  const [lastName,setLastName]=useState('');
+  const [phone,setPhone]=useState('');
+  const [busy,setBusy]=useState(false);
+  const [error,setError]=useState(null);
+  const inputStyle={background:'#fff',border:'1.5px solid #E5D4B5'};
+  const doLogin=async()=>{
+    setError(null);
+    const em=email.trim().toLowerCase();
+    if(!em||!password){setError("Enter your email and password.");return;}
+    setBusy(true);
+    try{ await signInWithEmailAndPassword(auth,em,password); }
+    catch(e){ setError("That email and password didn't match. Check them, or create your account below."); setBusy(false); }
+  };
+  const doSignup=async()=>{
+    setError(null);
+    const em=email.trim().toLowerCase();
+    if(!firstName.trim()||!em||password.length<6){setError("Add your first name, email, and a password of at least 6 characters.");return;}
+    setBusy(true);
+    try{
+      const inv=await getDoc(doc(db,'allowed',em));
+      if(!inv.exists()){ setError("That email hasn't been invited yet. Ask the family organizer to add it."); setBusy(false); return; }
+      const cred=await createUserWithEmailAndPassword(auth,em,password);
+      await setDoc(doc(db,'members',cred.user.uid),{firstName:firstName.trim(),lastName:lastName.trim(),email:em,phone:phone.trim(),createdAt:Date.now()});
+      try{ await sendEmailVerification(cred.user); }catch(e){}
+    }catch(e){
+      const code=e&&e.code;
+      if(code==='auth/email-already-in-use') setError("There's already an account for that email — try logging in instead.");
+      else if(code==='auth/weak-password') setError("Please choose a password of at least 6 characters.");
+      else if(code==='auth/invalid-email') setError("That doesn't look like a valid email address.");
+      else setError("Couldn't create the account. Please try again.");
+      setBusy(false);
+    }
+  };
+  return (
+    <div style={{minHeight:'100vh',background:'linear-gradient(180deg,#1B4965 0%,#2C5F73 100%)',display:'flex',alignItems:'center',justifyContent:'center',padding:'24px'}}>
+      <div style={{maxWidth:'420px',width:'100%',background:'#FBF6EE',borderRadius:'24px',padding:'32px',boxShadow:'0 20px 60px rgba(0,0,0,0.25)',fontFamily:'Outfit, system-ui, sans-serif'}}>
+        <div style={{textAlign:'center',marginBottom:'20px'}}>
+          <div style={{fontSize:'44px'}}>🏖️</div>
+          <h1 style={{fontFamily:'Fraunces, Georgia, serif',fontSize:'28px',fontWeight:600,color:'#1B4965',margin:'4px 0 2px'}}>The Beach House</h1>
+          <p style={{fontFamily:'Fraunces, Georgia, serif',fontStyle:'italic',color:'#C8553D',margin:0}}>{mode==='login'?'Welcome back — sign in below.':'Set up your account to get in.'}</p>
+        </div>
+        <div className="flex gap-1 p-1 rounded-full mb-5" style={{background:'#fff',border:'1px solid #E5D4B5'}}>
+          <button onClick={()=>{setMode('login');setError(null);}} className="flex-1 py-2 rounded-full text-sm font-medium" style={{background:mode==='login'?'#1B4965':'transparent',color:mode==='login'?'#FBF6EE':'#1B4965'}}>Log in</button>
+          <button onClick={()=>{setMode('signup');setError(null);}} className="flex-1 py-2 rounded-full text-sm font-medium" style={{background:mode==='signup'?'#1B4965':'transparent',color:mode==='signup'?'#FBF6EE':'#1B4965'}}>Create account</button>
+        </div>
+        <div className="space-y-3">
+          {mode==='signup'&&(
+            <div className="grid grid-cols-2 gap-3">
+              <input type="text" value={firstName} onChange={e=>setFirstName(e.target.value)} placeholder="First name" className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
+              <input type="text" value={lastName} onChange={e=>setLastName(e.target.value)} placeholder="Last name" className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
+            </div>
+          )}
+          <input type="email" value={email} onChange={e=>setEmail(e.target.value)} placeholder="Email address" autoComplete="username" className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
+          <input type="password" value={password} onChange={e=>setPassword(e.target.value)} placeholder="Password" autoComplete={mode==='login'?'current-password':'new-password'} className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
+          {mode==='signup'&&(
+            <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Phone number" className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
+          )}
+          {error&&<div className="text-sm px-3 py-2 rounded-xl" style={{background:'#C8553D15',color:'#C8553D'}}>{error}</div>}
+          <button onClick={mode==='login'?doLogin:doSignup} disabled={busy} className="w-full py-3 rounded-full font-medium transition-all hover:scale-[1.02] disabled:opacity-50" style={{background:'#E07856',color:'#FBF6EE',boxShadow:'0 4px 14px rgba(224,120,86,0.4)'}}>{busy?'One moment…':(mode==='login'?'Log in':'Create my account')}</button>
+        </div>
+        <p style={{fontSize:'12px',color:'#2A2522',opacity:0.55,textAlign:'center',marginTop:'16px'}}>Access is by invitation only. Use the email your invitation was sent to.</p>
+      </div>
+    </div>
+  );
+}
+
+function Root(){
+  const [user,setUser]=useState(undefined);
+  useEffect(()=>{ if(!auth){setUser(null);return;} const unsub=onAuthStateChanged(auth,u=>setUser(u)); return unsub; },[]);
+  if(user===undefined) return <AuthBootSplash/>;
+  if(!user) return <AuthScreen/>;
+  return (<><App/><LogoutButton/></>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(NEEDS_SETUP ? <SetupScreen/> : <Root/>);
