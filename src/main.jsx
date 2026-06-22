@@ -36,8 +36,9 @@ const ROOMS = [
   { id:'bunk-left', name:'Port Bunks', subtitle:'Street Side · 4 beds · Left', capacity:4, color:'#D69F3C', icon:'🪜', description:'Mirror of Starboard. Pillow forts encouraged.' },
   { id:'double-queen', name:'The Double', subtitle:'Two Queens · Level 1', capacity:4, color:'#5B8266', icon:'🌿', description:'Two queen beds. Great for small families.' },
   { id:'single-queen', name:"The Crow's Nest", subtitle:'Queen · Level 2', capacity:2, color:'#8B6B9A', icon:'🌙', description:'Upstairs hideaway. Cozy and quiet.' },
-  { id:'private-lantern', name:'The Lantern', subtitle:'Private King · Level 2', capacity:2, color:'#8B5A3C', icon:'🔦', description:'Private King suite.', private:true, code:'2426' },
-  { id:'private-compass', name:'The Compass', subtitle:'Private King · Ocean Front · Level 1', capacity:2, color:'#1F3A4E', icon:'🧭', description:'Private King with ocean views.', private:true, code:'8835' }
+  { id:'private-lantern', name:'The Lantern', subtitle:'Private King · Level 2', capacity:2, color:'#8B5A3C', icon:'🔦', description:'Private King suite.', private:true, owner:'tjmorin74@gmail.com' },
+  { id:'private-compass', name:'The Compass', subtitle:'Private King · Ocean Front · Level 1', capacity:2, color:'#1F3A4E', icon:'🧭', description:'Private King with ocean views.', private:true, owner:'jamorin1@charter.net' }
+   
 ];
 const MAX_CAPACITY = 20;
 const WHOLE_HOUSE_CODE = '7700';
@@ -360,6 +361,7 @@ function WholeHousePicker({wholeHouse,setWholeHouse,conflictedRooms,datesValid,c
 }
 
 function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,onSaveGuest,onCancel}){
+  const userEmail=(auth&&auth.currentUser&&auth.currentUser.email?auth.currentUser.email:'').toLowerCase();
   const [firstName,setFirstName]=useState(editingBooking?.firstName||'');
   const [lastName,setLastName]=useState(editingBooking?.lastName||'');
   const [email,setEmail]=useState(editingBooking?.email||'');
@@ -375,15 +377,11 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const [wholeHouseUnlocked,setWholeHouseUnlocked]=useState(editingBooking?.wholeHouse||false);
   const [showConfirm,setShowConfirm]=useState(false);
   const [error,setError]=useState(null);
-  const [unlockedRooms,setUnlockedRooms]=useState(()=>new Set((editingBooking?.rooms||[]).filter(rid=>ROOMS.find(r=>r.id===rid)?.private)));
-  const [codeEntryFor,setCodeEntryFor]=useState(null);
-  const [codeInput,setCodeInput]=useState('');
-  const [codeError,setCodeError]=useState(null);
   const [selectedGuest,setSelectedGuest]=useState(()=>editingBooking&&editingBooking.email?guests.find(g=>g.email===editingBooking.email&&g.firstName===editingBooking.firstName)||null:null);
   const [saveToDirectory,setSaveToDirectory]=useState(false);
 
   const setWholeHouse=val=>{setWholeHouseRaw(val);if(!val)setWholeHouseUnlocked(false);};
-  useEffect(()=>{if(wholeHouse){setSelectedRooms(ROOMS.map(r=>r.id));setUnlockedRooms(new Set(ROOMS.filter(r=>r.private).map(r=>r.id)));}else if(!editingBooking?.wholeHouse){setSelectedRooms(editingBooking?.rooms||[]);}},[wholeHouse]);
+  useEffect(()=>{if(wholeHouse){setSelectedRooms(ROOMS.map(r=>r.id));}else if(!editingBooking?.wholeHouse){setSelectedRooms(editingBooking?.rooms||[]);}},[wholeHouse]);
 
   const nights=nightsCount(startDate,endDate),datesValid=nights>0;
   const overlappingBookings=useMemo(()=>bookings.filter(b=>b.id!==editingBooking?.id&&datesValid&&overlaps(startDate,endDate,b.startDate,b.endDate)),[bookings,startDate,endDate,datesValid,editingBooking]);
@@ -398,8 +396,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const selectGuest=g=>{setSelectedGuest(g);setFirstName(g.firstName);setLastName(g.lastName);setEmail(g.email);setPhone(g.phone);setSaveToDirectory(false);};
   const clearGuest=()=>{setSelectedGuest(null);setSaveToDirectory(false);};
 
-  const toggleRoom=rid=>{if(wholeHouse)return;if(!roomAvailability[rid].available)return;const room=ROOMS.find(r=>r.id===rid);if(room.private&&!unlockedRooms.has(rid)){setCodeEntryFor(rid);setCodeInput('');setCodeError(null);return;}setSelectedRooms(prev=>prev.includes(rid)?prev.filter(r=>r!==rid):[...prev,rid]);};
-  const submitCode=()=>{const room=ROOMS.find(r=>r.id===codeEntryFor);if(codeInput===room.code){setUnlockedRooms(prev=>new Set(prev).add(room.id));setSelectedRooms(prev=>prev.includes(room.id)?prev:[...prev,room.id]);setCodeEntryFor(null);setCodeInput('');setCodeError(null);}else{setCodeError("Code doesn't match.");}};
+  const toggleRoom=rid=>{if(wholeHouse)return;const room=ROOMS.find(r=>r.id===rid);if(room.owner&&room.owner!==userEmail)return;if(!roomAvailability[rid].available)return;setSelectedRooms(prev=>prev.includes(rid)?prev.filter(r=>r!==rid):[...prev,rid]);};
 
   const handleSubmit=()=>{
     setError(null);
@@ -488,25 +485,19 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
               <div className="flex items-baseline justify-between mb-4"><div className="text-xs uppercase tracking-[0.25em]" style={{color:'#C8553D'}}>{isJoinMode?'Pick rooms (optional)':'Or pick individual rooms'}</div><div className="text-sm font-display italic" style={{color:'#1B4965'}}>sleeps {totalCapacity} / {numGuests} needed</div></div>
               <div className="space-y-3">
                 {ROOMS.map(room=>{
-                  const avail=roomAvailability[room.id],sel=selectedRooms.includes(room.id),locked=room.private&&!unlockedRooms.has(room.id),entering=codeEntryFor===room.id;
-                  if(entering) return(
-                    <div key={room.id} className="p-4 rounded-2xl grain" style={{background:'#fff',border:`2px solid ${room.color}`}}>
-                      <div className="flex items-center gap-2 mb-3"><KeyRound size={18} style={{color:room.color}}/><span className="font-display text-lg font-semibold" style={{color:room.color}}>Code for {room.name}</span></div>
-                      <div className="flex flex-col sm:flex-row gap-2"><input autoFocus type="text" inputMode="numeric" maxLength={4} value={codeInput} onChange={e=>{setCodeInput(e.target.value.replace(/[^0-9]/g,'').slice(0,4));setCodeError(null);}} onKeyDown={e=>e.key==='Enter'&&submitCode()} placeholder="• • • •" className="flex-1 px-4 py-3 rounded-xl outline-none font-mono text-2xl text-center" style={{background:'#FBF6EE',border:'1.5px solid #E5D4B5',letterSpacing:'0.5em',fontWeight:600}}/><button onClick={submitCode} disabled={codeInput.length!==4} className="px-5 py-3 rounded-xl font-medium hover:scale-105 transition-all disabled:opacity-40" style={{background:room.color,color:'#FBF6EE'}}>Unlock</button><button onClick={()=>{setCodeEntryFor(null);setCodeInput('');setCodeError(null);}} className="px-4 py-3 rounded-xl font-medium" style={{opacity:0.6}}>Cancel</button></div>
-                      {codeError&&<div className="text-xs mt-2 font-medium" style={{color:'#C8553D'}}>{codeError}</div>}
-                    </div>
-                  );
+                  const avail=roomAvailability[room.id],sel=selectedRooms.includes(room.id);
+                  const ownedByOther=room.owner&&room.owner!==userEmail,isMine=room.owner&&room.owner===userEmail,disabled=!avail.available||ownedByOther;
                   return(
-                    <button key={room.id} onClick={()=>toggleRoom(room.id)} disabled={!avail.available} className="w-full text-left p-4 rounded-2xl transition-all relative overflow-hidden grain" style={{background:sel?room.color:'#fff',color:sel?'#FBF6EE':'#2A2522',border:`2px solid ${sel?room.color:avail.available?`${room.color}30`:'#E5D4B5'}`,opacity:avail.available?1:0.5,cursor:avail.available?'pointer':'not-allowed'}}>
+                    <button key={room.id} onClick={()=>toggleRoom(room.id)} disabled={disabled} className="w-full text-left p-4 rounded-2xl transition-all relative overflow-hidden grain" style={{background:sel?room.color:'#fff',color:sel?'#FBF6EE':'#2A2522',border:`2px solid ${sel?room.color:!disabled?`${room.color}30`:'#E5D4B5'}`,opacity:disabled?0.5:1,cursor:disabled?'not-allowed':'pointer'}}>
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2 mb-1 flex-wrap"><span className="text-xl">{room.icon}</span><span className="font-display text-lg font-semibold leading-tight">{room.name}</span>{room.private&&<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{background:sel?'rgba(251,246,238,0.2)':`${room.color}15`,color:sel?'#FBF6EE':room.color,fontWeight:600}}>{locked?<Lock size={9}/>:<Check size={9}/>}private</span>}</div>
+                          <div className="flex items-center gap-2 mb-1 flex-wrap"><span className="text-xl">{room.icon}</span><span className="font-display text-lg font-semibold leading-tight">{room.name}</span>{room.private&&<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full inline-flex items-center gap-1" style={{background:sel?'rgba(251,246,238,0.2)':`${room.color}15`,color:sel?'#FBF6EE':room.color,fontWeight:600}}><Lock size={9}/>private</span>}{isMine&&<span className="text-[10px] uppercase tracking-wider px-2 py-0.5 rounded-full" style={{background:sel?'rgba(251,246,238,0.2)':'#5B826615',color:sel?'#FBF6EE':'#5B8266',fontWeight:600}}>yours</span>}</div>
                           <div className="text-xs uppercase tracking-wider" style={{opacity:sel?0.85:0.6}}>{room.subtitle} · sleeps {room.capacity}</div>
                           <div className="text-sm mt-2 font-display italic" style={{opacity:sel?0.95:0.75}}>{room.description}</div>
-                          {!avail.available&&<div className="text-xs mt-2 font-medium" style={{color:'#C8553D'}}>Taken by {fullName(avail.conflictWith)} ({shortDate(avail.conflictWith.startDate)}–{shortDate(avail.conflictWith.endDate)})</div>}
-                          {locked&&avail.available&&<div className="text-xs mt-2 font-medium flex items-center gap-1" style={{color:room.color}}><KeyRound size={11}/>Tap to enter room code</div>}
+                          {!avail.available&&!ownedByOther&&<div className="text-xs mt-2 font-medium" style={{color:'#C8553D'}}>Taken by {fullName(avail.conflictWith)} ({shortDate(avail.conflictWith.startDate)}–{shortDate(avail.conflictWith.endDate)})</div>}
+                          {ownedByOther&&<div className="text-xs mt-2 font-medium flex items-center gap-1" style={{color:'#C8553D'}}><Lock size={11}/>Private room — reserved for its owner</div>}
                         </div>
-                        <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center" style={{background:sel?'#FBF6EE':'transparent',border:sel?'none':`1.5px solid ${room.color}50`}}>{sel?<Check size={14} style={{color:room.color}} strokeWidth={3}/>:locked?<Lock size={12} style={{color:room.color,opacity:0.6}}/>:null}</div>
+                        <div className="flex-shrink-0 w-6 h-6 rounded-full flex items-center justify-center" style={{background:sel?'#FBF6EE':'transparent',border:sel?'none':`1.5px solid ${room.color}50`}}>{sel?<Check size={14} style={{color:room.color}} strokeWidth={3}/>:ownedByOther?<Lock size={12} style={{color:room.color,opacity:0.6}}/>:null}</div>
                       </div>
                     </button>
                   );
@@ -527,7 +518,6 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
     </div>
   );
 }
-
 function Field({label,children}){return <div><label className="block text-xs uppercase tracking-[0.2em] mb-2" style={{color:'#1B4965',opacity:0.7}}>{label}</label>{children}</div>;}
 
 function ConfirmModal({booking,joinTarget,joinMessage,saveToDirectory,selectedGuest,editing,onConfirm,onCancel}){
