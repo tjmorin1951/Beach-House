@@ -325,7 +325,7 @@ function BookingCard({booking,compact,onClick}){
       {booking.wholeHouse&&<div className="absolute -top-4 -right-4 text-7xl opacity-15">🏠</div>}
       <div className="flex items-start justify-between gap-2 mb-3"><div><div className="font-display text-xl font-semibold">{fullName(booking)}</div><div className="text-xs mt-0.5" style={{opacity:0.6}}>{booking.numGuests} guest{booking.numGuests!==1?'s':''}</div></div><div className="text-2xl">{booking.wholeHouse?'🏠':rooms[0]?.icon||'🏖️'}</div></div>
       <div className="font-display italic text-base mb-3" style={{color:booking.wholeHouse?'#FFD580':'#C8553D'}}>{shortDate(booking.startDate)} → {shortDate(booking.endDate)}<span className="text-xs not-italic ml-2" style={{opacity:0.5}}>{nights} night{nights!==1?'s':''}</span></div>
-      {booking.wholeHouse?<span className="text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1.5 w-fit" style={{background:'rgba(251,246,238,0.2)',color:'#FFD580'}}><Star size={10}/>Full House · All 7 Rooms</span>:<div className="flex flex-wrap gap-1.5">{rooms.map(r=><span key={r.id} className="text-xs px-2 py-1 rounded-full" style={{background:`${r.color}15`,color:r.color,fontWeight:500}}>{r.name}</span>)}</div>}
+      {booking.wholeHouse?<span className="text-xs px-2.5 py-1 rounded-full font-semibold flex items-center gap-1.5 w-fit" style={{background:'rgba(251,246,238,0.2)',color:'#FFD580'}}><Star size={10}/>Full House · {rooms.length Room{rooms.length===1?'':'s'}</span>:<div className="flex flex-wrap gap-1.5">{rooms.map(r=><span key={r.id} className="text-xs px-2 py-1 rounded-full" style={{background:`${r.color}15`,color:r.color,fontWeight:500}}>{r.name}</span>)}</div>}
     </div>
   );
 }
