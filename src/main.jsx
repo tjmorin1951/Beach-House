@@ -41,7 +41,6 @@ const ROOMS = [
    
 ];
 const MAX_CAPACITY = 20;
-const WHOLE_HOUSE_CODE = '7700';
 const DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 const fmtDate = d => { const x=new Date(d); return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`; };
