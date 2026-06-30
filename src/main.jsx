@@ -353,7 +353,7 @@ function WholeHousePicker({wholeHouse,setWholeHouse,conflictedRooms,datesValid,c
             {localErr&&<div className="text-xs mt-2" style={{color:'#FFBBAA'}}>{localErr}</div>}
           </div>
         ))}
-        {!conflictedRooms.length&&codeUnlocked&&<div className="mt-3 flex items-center gap-2 text-sm" style={{color:'#A8E6CF'}}><Check size={15}/>House code verified — all rooms included</div>}
+        {!conflictedRooms.length&&codeUnlocked&&<div className="mt-3 flex items-center gap-2 text-sm" style={{color:'#A8E6CF'}}><Check size={15}/>All rooms included</div>}
       </div>
       <div className="px-4 py-3 flex flex-wrap gap-2" style={{background:'#1B496520'}}>{ROOMS.map(r=><span key={r.id} className="text-xs px-2.5 py-1 rounded-full font-medium" style={{background:`${r.color}25`,color:r.color}}>{r.icon} {r.name}</span>)}</div>
     </div>
