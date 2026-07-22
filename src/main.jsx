@@ -36,11 +36,12 @@ const ROOMS = [
   { id:'bunk-left', name:'Port Bunks', subtitle:'Street Side · 4 beds · Left', capacity:4, color:'#D69F3C', icon:'🪜', description:'Mirror of Starboard. Pillow forts encouraged.' },
   { id:'double-queen', name:'The Double', subtitle:'Two Queens · Level 1', capacity:4, color:'#5B8266', icon:'🌿', description:'Two queen beds. Great for small families.' },
   { id:'single-queen', name:"The Crow's Nest", subtitle:'Queen · Level 2', capacity:2, color:'#8B6B9A', icon:'🌙', description:'Upstairs hideaway. Cozy and quiet.' },
-  { id:'private-lantern', name:'The Lantern', subtitle:'Private King · Level 2', capacity:2, color:'#8B5A3C', icon:'🔦', description:'Private King suite.', private:true, owner:'tjmorin74@gmail.com' },
-  { id:'private-compass', name:'The Compass', subtitle:'Private King · Ocean Front · Level 1', capacity:2, color:'#1F3A4E', icon:'🧭', description:'Private King with ocean views.', private:true, owner:'jamorin1@charter.net' }
+  { id:'private-lantern', name:'The Lantern', subtitle:'Private King · Level 2', capacity:2, color:'#8B5A3C', icon:'🔦', description:'Private King suite.', private:true, owners:['tjmorin74@gmail.com'] },
+  { id:'private-compass', name:'The Compass', subtitle:'Private King · Ocean Front · Level 1', capacity:2, color:'#1F3A4E', icon:'🧭', description:'Private King with ocean views.', private:true, owners:['jamorin1@charter.net','marticatz1@charter.net'] }
    
 ];
 const MAX_CAPACITY = 20;
+const canBookRoom=(room,email)=>!room.owners||room.owners.includes(email);
 const DOW_SHORT = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 
 const fmtDate = d => { const x=new Date(d); return `${x.getFullYear()}-${String(x.getMonth()+1).padStart(2,'0')}-${String(x.getDate()).padStart(2,'0')}`; };
@@ -361,7 +362,7 @@ function WholeHousePicker({wholeHouse,setWholeHouse,conflictedRooms,datesValid,c
 
 function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,onSaveGuest,onCancel}){
   const userEmail=(auth&&auth.currentUser&&auth.currentUser.email?auth.currentUser.email:'').toLowerCase();
-  const bookableRooms=ROOMS.filter(r=>!r.owner||r.owner===userEmail);
+  const bookableRooms=ROOMS.filter(r=>canBookRoom(r,userEmail));
   const [firstName,setFirstName]=useState(editingBooking?.firstName||'');
   const [lastName,setLastName]=useState(editingBooking?.lastName||'');
   const [email,setEmail]=useState(editingBooking?.email||'');
@@ -395,7 +396,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const selectGuest=g=>{setSelectedGuest(g);setFirstName(g.firstName);setLastName(g.lastName);setEmail(g.email);setPhone(g.phone);setSaveToDirectory(false);};
   const clearGuest=()=>{setSelectedGuest(null);setSaveToDirectory(false);};
 
-  const toggleRoom=rid=>{if(wholeHouse)return;const room=ROOMS.find(r=>r.id===rid);if(room.owner&&room.owner!==userEmail)return;if(!roomAvailability[rid].available)return;setSelectedRooms(prev=>prev.includes(rid)?prev.filter(r=>r!==rid):[...prev,rid]);};
+  const toggleRoom=rid=>{if(wholeHouse)return;const room=ROOMS.find(r=>r.id===rid);if(!canBookRoom(room,userEmail))return;if(!roomAvailability[rid].available)return;setSelectedRooms(prev=>prev.includes(rid)?prev.filter(r=>r!==rid):[...prev,rid]);};
 
   const handleSubmit=()=>{
     setError(null);
@@ -485,7 +486,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
               <div className="space-y-3">
                 {ROOMS.map(room=>{
                   const avail=roomAvailability[room.id],sel=selectedRooms.includes(room.id);
-                  const ownedByOther=room.owner&&room.owner!==userEmail,isMine=room.owner&&room.owner===userEmail,disabled=!avail.available||ownedByOther;
+                  const ownedByOther=!canBookRoom(room,userEmail),isMine=room.owners&&canBookRoom(room,userEmail),disabled=!avail.available||ownedByOther;
                   return(
                     <button key={room.id} onClick={()=>toggleRoom(room.id)} disabled={disabled} className="w-full text-left p-4 rounded-2xl transition-all relative overflow-hidden grain" style={{background:sel?room.color:'#fff',color:sel?'#FBF6EE':'#2A2522',border:`2px solid ${sel?room.color:!disabled?`${room.color}30`:'#E5D4B5'}`,opacity:disabled?0.5:1,cursor:disabled?'not-allowed':'pointer'}}>
                       <div className="flex items-start justify-between gap-3">
