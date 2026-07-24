@@ -40,7 +40,9 @@ export const GUEST_GUIDE_HTML = `
   <p style="${P}"><strong>Fireplace.</strong> Two switches sit to the right of the fireplace. The <strong>left</strong> switch must stay on at all times. Use only the <strong>right</strong> switch to turn the flames on and off.</p>
   <p style="${P}"><strong>Microwave.</strong> Open and close the kitchen microwave using the push button, not by hand.</p>
   <p style="${P}"><strong>Kitchen outlets.</strong> The child-protected outlets can be stiff. They work fine, but the plug may need to go in at the right angle.</p>
-
+  <p style="${P}"><strong>Indoor shades.</strong> Two remote controllers operate the indoor shades &mdash; one at the top landing of the living level, the other in the sitting nook on the left-hand wall, by the deck door and window. To use: press the horizontal bar once, on either the left or right, until a "0" shows on the screen. Then press the up arrow to raise the shades or the down arrow to lower them. They all move at once.</p>
+  <p style="${P}"><strong>Roof deck hurricane door.</strong> Please keep the hurricane door completely rolled down when it's raining, to prevent water leaking into the house.</p>
+  
   <h3 style="${H}">Beach, Pool &amp; Outdoor</h3>
   <p style="${P}"><strong>Beach towels.</strong> On the rack to the left of the door leading to the pool and beach. Please use these instead of bath towels.</p>
   <p style="${P}"><strong>Beach gear.</strong> Chairs, umbrellas, and boogie boards are in the garage, garage closet, and lower-level inside closet. Rinse each item, let it dry, and return it where you found it.</p>
