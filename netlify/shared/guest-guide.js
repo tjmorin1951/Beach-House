@@ -53,7 +53,7 @@ export const GUEST_GUIDE_HTML = `
   <p style="${P}"><strong>Cleaning supplies.</strong> A vacuum is in the front hallway on each living floor. Broom and Swiffer mop are behind the door in the top-floor laundry room; a broom, iron, and ironing board are in the second-floor laundry room.</p>
 
   <div style="${BOX}">
-    <strong>Pet policy.</strong> Please confirm with John or Marti before bringing any pet to the property.
+    <strong>Pet policy.</strong> <strong>Pet policy.</strong> Sorry, no pets allowed on the property.
   </div>
 
   <h3 style="${H}">Before You Go</h3>
@@ -68,6 +68,6 @@ export const GUEST_GUIDE_HTML = `
   &#9744;&nbsp; Lock the garage and check that the slider is secure.</p>
 
   <div style="${BOX}">
-    <strong>Thank you</strong> &mdash; we appreciate your help keeping 604 NIRR safe and ready for the next guests.
+    <<strong>Thank you</strong> &mdash; we appreciate your help keeping Uncle John's Beach House safe and ready for the next guests.
   </div>
 `;
