@@ -80,4 +80,4 @@ export default async () => {
   }
 };
 
-export const config = { schedule: '*/5 * * * *' };
+export const config = { schedule: '0 13 * * *' };
