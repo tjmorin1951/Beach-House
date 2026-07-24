@@ -68,6 +68,6 @@ export const GUEST_GUIDE_HTML = `
   &#9744;&nbsp; Lock the garage and check that the slider is secure.</p>
 
   <div style="${BOX}">
-    <<strong> Thank you</strong> &mdash; we appreciate your help keeping Uncle John's Beach House safe and ready for the next guests.
+    <strong>Thank you</strong> &mdash; we appreciate your help keeping Uncle John's Beach House safe and ready for the next guests.
   </div>
 `;
