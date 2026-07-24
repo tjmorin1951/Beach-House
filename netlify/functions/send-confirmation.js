@@ -7,7 +7,7 @@ const CONTACT = "Tom Morin at (919) 757-2031";
 const HOUSE_RULES = [
   "House rules coming soon."
 ];
-const DOOR_CODES = "Door codes will be sent before your arrival.";
+const DOOR_CODES = "Your door codes will arrive by email three days before check-in.";
 // --------------------------
 
 export const handler = async (event) => {
