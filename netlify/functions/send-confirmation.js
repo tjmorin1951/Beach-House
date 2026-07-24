@@ -1,4 +1,5 @@
 // Sends booking confirmation emails via Resend.
+import { GUEST_GUIDE_HTML } from '../shared/guest-guide.js';
 
 const FROM = "Uncle John's Beach House <noreply@unclejohnsbeachhouse.com>";
 const CONTACT = "Tom Morin at (919) 757-2031";
@@ -40,7 +41,7 @@ export const handler = async (event) => {
         </div>
         <div style="background:#ffffff;border:1px solid #E5D4B5;border-radius:16px;padding:20px;margin:20px 0;">
           <h2 style="font-size:17px;color:#1B4965;margin:0 0 10px;">Guest Tips and Guidelines</h2>
-          <ul style="font-family:Arial,sans-serif;font-size:14px;padding-left:20px;margin:0;">${rulesHtml}</ul>
+          ${GUEST_GUIDE_HTML}
         </div>
         <div style="background:#ffffff;border:1px solid #E5D4B5;border-radius:16px;padding:20px;margin:20px 0;">
           <h2 style="font-size:17px;color:#1B4965;margin:0 0 10px;">Getting In</h2>
