@@ -10,6 +10,8 @@ const DAYS_AHEAD = 3;
 // ---- EDIT HERE IF THE CODES EVER CHANGE ----
 const GARAGE_CODE = "2604";
 const DOOR_CODE = "4930";
+const WIFI_NETWORK = "eero wifi";
+const WIFI_PASSWORD = "MartiLou46!";
 // --------------------------------------------
 
 function pretty(ymd) {
@@ -45,7 +47,7 @@ function buildHtml(b) {
         This is the only way into the house &mdash; please don't count on any other entrance.
       </p>
     </div>
-    <p style="font-family:Arial,sans-serif;font-size:13px;text-align:center;">
+    <div style="background:#ffffff;border:1px solid #E5D4B5;border-radius:16px;padding:20px;margin:20px 0;"><h2 style="font-size:17px;color:#1B4965;margin:0 0 12px;">Wi-Fi</h2><p style="font-family:Arial,sans-serif;font-size:14px;margin:0;">Network: <strong style="font-size:16px;">${WIFI_NETWORK}</strong><br>Password: <strong style="font-size:16px;letter-spacing:1px;">${WIFI_PASSWORD}</strong></p></div><p style="font-family:Arial,sans-serif;font-size:13px;text-align:center;">
       This mailbox isn't monitored &mdash; please don't reply.<br>
       Any problems, text ${CONTACT}.
     </p>
