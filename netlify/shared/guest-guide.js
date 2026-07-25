@@ -61,13 +61,15 @@ export const GUEST_GUIDE_HTML = `
   <h3 style="${H}">Before You Go</h3>
   <p style="${P}">Before the last guest leaves, please:</p>
   <p style="${P}">&#9744;&nbsp; Strip the beds, wash the sheets and towels, and remake the beds.<br>
+  &#9744;&nbsp; Please wash and dry all the beach towels and return them to the rack on the lower level.<br>
   &#9744;&nbsp; Empty every indoor trash and recycling container.<br>
   &#9744;&nbsp; Place recyclables loose in the bin &mdash; do not bag them.<br>
   &#9744;&nbsp; Load all dirty dishes in the dishwasher and run it. Put dishes away when possible.<br>
-  &#9744;&nbsp; Rinse, dry, and return beach chairs, umbrellas, boogie boards, and other gear.<br>
+  &#9744;&nbsp; Please take the time to vacuum all the floors before you leave.<br>
+  &#9744;&nbsp; Rinse, let dry, and return beach chairs, umbrellas, boogie boards, and other gear to the places you found them.<br>
   &#9744;&nbsp; Leave washer doors open.<br>
   &#9744;&nbsp; Roll the roof-deck hurricane door completely down.<br>
-  &#9744;&nbsp; Lock the garage and check that the slider is secure.</p>
+  &#9744;&nbsp; Lock all doors and close the garage door upon exit.</p>
 
   <div style="${BOX}">
     <strong>Thank you</strong> &mdash; we appreciate your help keeping Uncle John's Beach House safe and ready for the next guests.
