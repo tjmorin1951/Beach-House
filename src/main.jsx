@@ -766,6 +766,7 @@ function AuthScreen(){
   const [phone,setPhone]=useState('');
   const [busy,setBusy]=useState(false);
   const [error,setError]=useState(null);
+   const [idleNote]=useState(()=>{try{if(sessionStorage.getItem('idleLogout')){sessionStorage.removeItem('idleLogout');return true;}}catch(e){}return false;});
   const inputStyle={background:'#fff',border:'1.5px solid #E5D4B5'};
   const doLogin=async()=>{
     setError(null);
@@ -819,7 +820,8 @@ function AuthScreen(){
           {mode==='signup'&&(
             <input type="tel" value={phone} onChange={e=>setPhone(e.target.value)} placeholder="Phone number" className="w-full px-4 py-3 rounded-xl outline-none text-base" style={inputStyle}/>
           )}
-          {error&&<div className="text-sm px-3 py-2 rounded-xl" style={{background:'#C8553D15',color:'#C8553D'}}>{error}</div>}
+          {idleNote&&<div className="text-sm px-3 py-2 rounded-xl" style={{background:'#1B496512',color:'#1B4965'}}>You were signed out after 2 hours of inactivity. Please log in again.</div>}
+           {error&&<div className="text-sm px-3 py-2 rounded-xl" style={{background:'#C8553D15',color:'#C8553D'}}>{error}</div>}
           <button onClick={mode==='login'?doLogin:doSignup} disabled={busy} className="w-full py-3 rounded-full font-medium transition-all hover:scale-[1.02] disabled:opacity-50" style={{background:'#E07856',color:'#FBF6EE',boxShadow:'0 4px 14px rgba(224,120,86,0.4)'}}>{busy?'One moment…':(mode==='login'?'Log in':'Create my account')}</button>
         </div>
         <p style={{fontSize:'12px',color:'#2A2522',opacity:0.55,textAlign:'center',marginTop:'16px'}}>Access is by invitation only. Use the email your invitation was sent to.</p>
@@ -833,7 +835,7 @@ function Root(){
   const unsub=onAuthStateChanged(auth,u=>setUser(u));
     let idleTimer=null;
     const IDLE_MS=2*60*60*1000;
-    const resetIdle=()=>{if(idleTimer)clearTimeout(idleTimer);if(auth&&auth.currentUser){idleTimer=setTimeout(()=>{signOut(auth);},IDLE_MS);}};
+    const resetIdle=()=>{if(idleTimer)clearTimeout(idleTimer);if(auth&&auth.currentUser){idleTimer=setTimeout(()=>{try{sessionStorage.setItem('idleLogout','1');}catch(e){}signOut(auth);},IDLE_MS);}};
     const events=['mousedown','keydown','scroll','touchstart','click'];
     events.forEach(e=>window.addEventListener(e,resetIdle,{passive:true}));
     resetIdle();
