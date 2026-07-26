@@ -830,7 +830,15 @@ function AuthScreen(){
 
 function Root(){
   const [user,setUser]=useState(undefined);
-  useEffect(()=>{ if(!auth){setUser(null);return;} const unsub=onAuthStateChanged(auth,u=>setUser(u)); return unsub; },[]);
+  const unsub=onAuthStateChanged(auth,u=>setUser(u));
+    let idleTimer=null;
+    const IDLE_MS=2*60*60*1000;
+    const resetIdle=()=>{if(idleTimer)clearTimeout(idleTimer);if(auth&&auth.currentUser){idleTimer=setTimeout(()=>{signOut(auth);},IDLE_MS);}};
+    const events=['mousedown','keydown','scroll','touchstart','click'];
+    events.forEach(e=>window.addEventListener(e,resetIdle,{passive:true}));
+    resetIdle();
+    return ()=>{unsub();if(idleTimer)clearTimeout(idleTimer);events.forEach(e=>window.removeEventListener(e,resetIdle));};
+    },[]);
   if(user===undefined) return <AuthBootSplash/>;
   if(!user) return <AuthScreen/>;
   return (<><App/><LogoutButton/></>);
