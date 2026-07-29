@@ -834,7 +834,7 @@ function AuthScreen(){
 
 function Root(){
   const [user,setUser]=useState(undefined);
-  const unsub=onAuthStateChanged(auth,u=>setUser(u));
+  useEffect(()=>{ if(!auth){setUser(null);return;} const unsub=onAuthStateChanged(auth,u=>setUser(u));
     let idleTimer=null;
     const IDLE_MS=2*60*60*1000;
     const resetIdle=()=>{if(idleTimer)clearTimeout(idleTimer);if(auth&&auth.currentUser){idleTimer=setTimeout(()=>{try{sessionStorage.setItem('idleLogout','1');}catch(e){}signOut(auth);},IDLE_MS);}};
