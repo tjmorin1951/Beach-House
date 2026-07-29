@@ -374,6 +374,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const [endDate,setEndDate]=useState(editingBooking?.endDate||fmtDate(new Date(Date.now()+86400000*3)));
   const [selectedRooms,setSelectedRooms]=useState(editingBooking?.rooms||[]);
   const [notes,setNotes]=useState(editingBooking?.notes||'');
+   const [invitees,setInvitees]=useState(editingBooking?.invitees||[]);
   const [joinTargetId,setJoinTargetId]=useState(null);
   const [joinMessage,setJoinMessage]=useState('');
   const [wholeHouse,setWholeHouseRaw]=useState(editingBooking?.wholeHouse||false);
@@ -412,7 +413,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   };
   const confirmBooking=()=>{
     const target=bookings.find(b=>b.id===joinTargetId);
-    const baseData={firstName:firstName.trim(),lastName:lastName.trim(),guestName,email:email.trim(),phone:phone.trim(),numGuests,startDate,endDate,rooms:selectedRooms,notes:notes.trim()};
+    const baseData={firstName:firstName.trim(),lastName:lastName.trim(),guestName,email:email.trim(),phone:phone.trim(),numGuests,startDate,endDate,rooms:selectedRooms,notes:notes.trim(),invitees:invitees.filter(iv=>(iv.email||'').trim()).map(iv=>({name:(iv.name||'').trim(),email:iv.email.trim().toLowerCase()}))};
     if(saveToDirectory){
       onSaveGuest({id:selectedGuest?.id||`g_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:firstName.trim(),lastName:lastName.trim(),email:email.trim(),phone:phone.trim(),lastVisit:startDate,visitCount:(selectedGuest?.visitCount||0)+1,createdAt:selectedGuest?.createdAt||Date.now()});
     }
@@ -509,7 +510,8 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
           )}
         </div>
       </div>
-      {error&&<div className="mt-6 p-4 rounded-xl flex items-center gap-2" style={{background:'#C8553D15',color:'#C8553D'}}><X size={16}/>{error}</div>}
+      <div className="mb-6"><div className="text-xs uppercase tracking-[0.25em] mb-3" style={{color:'#C8553D'}}>Who else is coming?</div>{invitees.map((iv,i)=><div key={i} className="flex gap-2 mb-2"><input type="text" value={iv.name} onChange={e=>setInvitees(prev=>prev.map((x,j)=>j===i?{...x,name:e.target.value}:x))} placeholder="Name" className="flex-1 px-3 py-2 rounded-xl outline-none text-sm" style={{background:'#fff',border:'1.5px solid #E5D4B5'}}/><input type="email" value={iv.email} onChange={e=>setInvitees(prev=>prev.map((x,j)=>j===i?{...x,email:e.target.value}:x))} placeholder="Email" className="flex-1 px-3 py-2 rounded-xl outline-none text-sm" style={{background:'#fff',border:'1.5px solid #E5D4B5'}}/><button onClick={()=>setInvitees(prev=>prev.filter((x,j)=>j!==i))} className="w-9 h-9 rounded-full flex items-center justify-center flex-shrink-0" style={{color:'#C8553D',background:'#C8553D10'}}><X size={14}/></button></div>)}<button onClick={()=>setInvitees(prev=>[...prev,{name:'',email:''}])} className="flex items-center gap-1.5 px-4 py-2 rounded-full text-sm font-medium" style={{background:'#5B826615',color:'#5B8266',border:'1px solid #5B826630'}}><Plus size={14}/>Add someone</button></div>
+       {error&&<div className="mt-6 p-4 rounded-xl flex items-center gap-2" style={{background:'#C8553D15',color:'#C8553D'}}><X size={16}/>{error}</div>}
       <div className="mt-8 flex flex-wrap items-center justify-end gap-3">
         <button onClick={onCancel} className="px-5 py-3 rounded-full font-medium" style={{color:'#2A2522',opacity:0.7}}>Cancel</button>
         <button onClick={handleSubmit} className="flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all hover:scale-105" style={{background:isJoinMode?'#E07856':wholeHouse?'linear-gradient(135deg,#1B4965,#2C3E2E)':'#1B4965',color:'#FBF6EE',boxShadow:'0 4px 14px rgba(27,73,101,0.3)'}}>
