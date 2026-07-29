@@ -58,6 +58,7 @@ function normalizeBooking(b) {
   let fn=b.firstName||'',ln=b.lastName||'';
   if(!fn&&b.guestName){const p=b.guestName.trim().split(' ');fn=p[0]||'';ln=p.slice(1).join(' ')||'';}
   return {id:b.id||`b_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:fn||'Guest',lastName:ln||'',guestName:`${fn||'Guest'} ${ln}`.trim(),email:b.email||'',phone:b.phone||'',numGuests:Number.isFinite(b.numGuests)?b.numGuests:1,startDate:b.startDate||fmtDate(new Date()),endDate:b.endDate||fmtDate(new Date()),rooms:Array.isArray(b.rooms)?b.rooms:[],notes:typeof b.notes==='string'?b.notes:'',wholeHouse:!!b.wholeHouse,createdAt:b.createdAt||Date.now(),invitees:Array.isArray(b.invitees)?b.invitees:[]};
+}
 function normalizeGuest(g) {
   if(!g||typeof g!=='object') return null;
   let fn=g.firstName||'',ln=g.lastName||'';
