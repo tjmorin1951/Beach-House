@@ -1,5 +1,6 @@
 // Sends booking confirmation emails via Resend.
 import { GUEST_GUIDE_HTML } from '../shared/guest-guide.js';
+import { buildIcs, calendarButtonsHtml } from '../shared/calendar.js';
 
 const FROM = "Uncle John's Beach House <noreply@unclejohnsbeachhouse.com>";
 const CONTACT = "Tom Morin at (919) 757-2031";
@@ -47,7 +48,7 @@ export const handler = async (event) => {
           <h2 style="font-size:17px;color:#1B4965;margin:0 0 10px;">Getting In</h2>
           <p style="font-family:Arial,sans-serif;font-size:14px;margin:0;">${DOOR_CODES}</p>
         </div>
-        <p style="font-family:Arial,sans-serif;font-size:13px;text-align:center;">
+        ${calendarButtonsHtml(b.rawStart, b.rawEnd)}<p style="font-family:Arial,sans-serif;font-size:13px;text-align:center;">
           This mailbox isn't monitored &mdash; please don't reply.<br>
           Any problems or changes, text ${CONTACT}.
         </p>
@@ -62,7 +63,7 @@ export const handler = async (event) => {
         from: FROM,
         to: recipients,
         subject: `Your beach house stay — ${b.startDate || ""}`,
-        html
+        html, attachments: b.rawStart && b.rawEnd ? [{ filename: "beach-house.ics", content: Buffer.from(buildIcs(b.rawStart, b.rawEnd, b.bookingId)).toString("base64") }] : []
       })
     });
     if (!res.ok) {
