@@ -50,7 +50,7 @@ export const GUEST_GUIDE_HTML = `
 
   <h3 style="${H}">Trash, Recycling &amp; Cleaning</h3>
   <p style="${P}"><strong>Where.</strong> Place bins at the road in front of the house, between the mailbox and driveway. Put them out the night before whenever possible.</p>
-  <p style="${P}"><strong>When.</strong> May through October: Wednesday and Saturday. November through April: Wednesday only.</p>
+  <p style="${P}"><strong>When.</strong> Trash is collected Wednesday and Saturday from May through October, and Wednesday only from November through April. Recycling is collected every Wednesday year-round.</p>
   <p style="${P}"><strong>Recycling.</strong> Do not bag recyclables &mdash; the service won't empty the bin if bagged items are inside. Bins are clearly marked.</p>
   <p style="${P}"><strong>Cleaning supplies.</strong> A vacuum is in the front hallway on each living floor. Broom and Swiffer mop are behind the door in the top-floor laundry room; a broom, iron, and ironing board are in the second-floor laundry room.</p>
 
