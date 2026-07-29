@@ -32,7 +32,7 @@ function buildHtml(b) {
     <h1 style="font-size:24px;color:#1B4965;text-align:center;margin:8px 0 4px;">Your door codes</h1>
     <p style="text-align:center;font-style:italic;color:#C8553D;margin-top:0;">Uncle John's Beach House</p>
     <div style="background:#ffffff;border:1px solid #E5D4B5;border-radius:16px;padding:20px;margin:20px 0;">
-      <p style="margin:0 0 12px;">Hi 'there'},</p>
+      <p style="margin:0 0 12px;">Hi there},</p>
       <p style="margin:0 0 8px;">You arrive on <strong>${pretty(b.startDate)}</strong> &mdash; here's how to get in.</p>
     </div>
     <div style="background:#ffffff;border:1px solid #E5D4B5;border-radius:16px;padding:20px;margin:20px 0;">
