@@ -57,8 +57,7 @@ function normalizeBooking(b) {
   if(!b||typeof b!=='object') return null;
   let fn=b.firstName||'',ln=b.lastName||'';
   if(!fn&&b.guestName){const p=b.guestName.trim().split(' ');fn=p[0]||'';ln=p.slice(1).join(' ')||'';}
-  return {id:b.id||`b_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:fn||'Guest',lastName:ln||'',guestName:`${fn||'Guest'} ${ln}`.trim(),email:b.email||'',phone:b.phone||'',numGuests:Number.isFinite(b.numGuests)?b.numGuests:1,startDate:b.startDate||fmtDate(new Date()),endDate:b.endDate||fmtDate(new Date()),rooms:Array.isArray(b.rooms)?b.rooms:[],notes:typeof b.notes==='string'?b.notes:'',wholeHouse:!!b.wholeHouse,createdAt:b.createdAt||Date.now()};
-}
+  return {id:b.id||`b_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:fn||'Guest',lastName:ln||'',guestName:`${fn||'Guest'} ${ln}`.trim(),email:b.email||'',phone:b.phone||'',numGuests:Number.isFinite(b.numGuests)?b.numGuests:1,startDate:b.startDate||fmtDate(new Date()),endDate:b.endDate||fmtDate(new Date()),rooms:Array.isArray(b.rooms)?b.rooms:[],notes:typeof b.notes==='string'?b.notes:'',wholeHouse:!!b.wholeHouse,createdAt:b.createdAt||Date.now(),invitees:Array.isArray(b.invitees)?b.invitees:[]};
 function normalizeGuest(g) {
   if(!g||typeof g!=='object') return null;
   let fn=g.firstName||'',ln=g.lastName||'';
@@ -415,10 +414,8 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
   const confirmBooking=()=>{
     const target=bookings.find(b=>b.id===joinTargetId);
     const baseData={firstName:firstName.trim(),lastName:lastName.trim(),guestName,email:email.trim(),phone:phone.trim(),numGuests,startDate,endDate,rooms:selectedRooms,notes:notes.trim(),invitees:invitees.filter(iv=>(iv.email||'').trim()).map(iv=>({name:(iv.name||'').trim(),email:iv.email.trim().toLowerCase()}))};
-    if(saveToDirectory){
-      onSaveGuest({id:selectedGuest?.id||`g_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:firstName.trim(),lastName:lastName.trim(),email:email.trim(),phone:phone.trim(),lastVisit:startDate,visitCount:(selectedGuest?.visitCount||0)+1,createdAt:selectedGuest?.createdAt||Date.now()});
-    }
-    if(joinTargetId&&target){onSaveJoinRequest({id:`jr_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,...baseData,joinMessage:joinMessage.trim(),targetBookingId:joinTargetId,targetGuestName:fullName(target),status:'pending',createdAt:Date.now()});}
+    if(saveToDirectory){onSaveGuest({id:selectedGuest?.id||`g_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,firstName:firstName.trim(),lastName:lastName.trim(),email:email.trim(),phone:phone.trim(),lastVisit:startDate,visitCount:(selectedGuest?.visitCount||0)+1,createdAt:selectedGuest?.createdAt||Date.now()});}
+     if(joinTargetId&&target){onSaveJoinRequest({id:`jr_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,...baseData,joinMessage:joinMessage.trim(),targetBookingId:joinTargetId,targetGuestName:fullName(target),status:'pending',createdAt:Date.now()});}
     else{onSave({id:editingBooking?.id||`b_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,...baseData,wholeHouse:wholeHouse||false,createdAt:editingBooking?.createdAt||Date.now()});}
   };
 
