@@ -11,7 +11,7 @@ const DAYS_AHEAD = 3;
 const GARAGE_CODE = "2604";
 const DOOR_CODE = "4930";
 const WIFI_NETWORK = "eero wifi";
-const WIFI_PASSWORD = "MartiLou46!";
+const WIFI_PASSWORD = "MassExodus2026!";
 // --------------------------------------------
 
 function pretty(ymd) {
