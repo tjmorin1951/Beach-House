@@ -478,7 +478,7 @@ function BookingForm({bookings,guests,editingBooking,onSave,onSaveJoinRequest,on
               <button onClick={()=>setNumGuests(Math.min(MAX_CAPACITY,numGuests+1))} className="w-10 h-10 rounded-full font-medium transition-all hover:scale-110" style={{background:'#1B4965',color:'#FBF6EE'}}>+</button>
             </div>
           </Field>
-          <Field label="A note to the family (optional)"><textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Bringing the dog, can't wait to see everyone..." rows={3} className="w-full px-4 py-3 rounded-xl outline-none resize-none font-body text-base" style={{background:'#fff',border:'1.5px solid #E5D4B5'}}/></Field>
+          <Field label="A note to the family (optional)"><textarea value={notes} onChange={e=>setNotes(e.target.value)} placeholder="Can't wait to see everyone, arriving friday afternoon!..." rows={3} className="w-full px-4 py-3 rounded-xl outline-none resize-none font-body text-base" style={{background:'#fff',border:'1.5px solid #E5D4B5'}}/></Field>
         </div>
         <div>
           {!isJoinMode&&<div className="mb-5"><WholeHousePicker wholeHouse={wholeHouse} setWholeHouse={setWholeHouse} conflictedRooms={wholeHouseConflicts} datesValid={datesValid} codeUnlocked={wholeHouseUnlocked} onSubmitCode={()=>setWholeHouseUnlocked(true)}/></div>}
