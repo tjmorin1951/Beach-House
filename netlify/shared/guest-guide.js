@@ -41,6 +41,7 @@ export const GUEST_GUIDE_HTML = `
   <p style="${P}"><strong>Microwave.</strong> Open and close the kitchen microwave using the push button, not by hand.</p>
   <p style="${P}"><strong>Kitchen outlets.</strong> The child-protected outlets can be stiff. They work fine, but the plug may need to go in at the right angle.</p>
   <p style="${P}"><strong>Indoor shades.</strong> Two remote controllers operate the indoor shades &mdash; one at the top landing of the living level, the other in the sitting nook on the left-hand wall, by the deck door and window. To use: press the horizontal bar once, on either the left or right, until a "0" shows on the screen. Then press the up arrow to raise the shades or the down arrow to lower them. They all move at once.</p>
+  <p style="${P}"><strong>Deck screens.</strong> The deck screens are operated with the remote found on each level. To move them all at once, press the <strong>All</strong> button, then the up arrow to open or the down arrow to close. To operate one screen, press its number first, then the up or down arrow. Facing the ocean, the screens run from <strong>1</strong> on your left, closest to the house, then 2, 3, 4, and 5 going clockwise.</p>
   <p style="${P}"><strong>Roof deck hurricane door.</strong> Please keep the hurricane door completely rolled down when it's raining, to prevent water leaking into the house.</p>
   
   <h3 style="${H}">Beach, Pool &amp; Outdoor</h3>
@@ -67,7 +68,7 @@ export const GUEST_GUIDE_HTML = `
   &#9744;&nbsp; Load all dirty dishes in the dishwasher and run it. Put dishes away when possible.<br>
   &#9744;&nbsp; Please take the time to vacuum all the floors before you leave.<br>
   &#9744;&nbsp; Rinse, let dry, and return beach chairs, umbrellas, boogie boards, and other gear to the places you found them.<br>
-  &#9744;&nbsp; Leave washer doors open.<br>
+  &#9744;&nbsp; Leave washer and dryer doors open.<br>
   &#9744;&nbsp; Roll the roof-deck hurricane door completely down.<br>
   &#9744;&nbsp; Lock all doors and close the garage door upon exit.</p>
 
